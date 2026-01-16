@@ -1,0 +1,55 @@
+#cloud-config
+autoinstall:
+  version: 1
+
+  source:
+    search_drivers: false
+    id: ubuntu-server-minimal
+
+  storage:
+    swap:
+      size: 0
+    layout:
+      name: lvm
+
+  ssh:
+    install-server: true
+    allow-pw: false
+
+  packages:
+    - python3
+    - wget
+    - rsync
+    - bash-completion
+    - open-vm-tools
+
+  timezone: {{ system_settings.timezone }}
+
+  updates: all
+  
+  late-commands:
+    - lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
+    - resize2fs /dev/mapper/ubuntu--vg-ubuntu--lv
+
+  user-data:
+    hostname: ubuntu
+    users:
+    {%- if ssh_config.username == "root" %}
+      - name: {{ ssh_config.username }}
+        passwd: "{{ ssh_config.password }}"
+        shell: /bin/bash
+        lock_passwd: False
+        groups: sudo
+        sudo: "ALL=(ALL) NOPASSWD:ALL"
+        ssh_authorized_keys:
+          - {{ ssh_config.pub_key }}
+    {%- else %}
+      - name: root
+        ssh_authorized_keys:
+          - {{ ssh_config.pub_key }}
+    disable_root: false
+    {%- endif %}
+    chpasswd:
+      expire: false
+      users:
+      - {name: root, password: "{{ ssh_config.password }}"}

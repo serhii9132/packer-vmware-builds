@@ -1,0 +1,44 @@
+system_settings:
+  version: 22
+  memory: 4096
+  is_headless: true
+  firmware_type: "efi"
+  http_directory: "http"
+  network_adapter_type: "vmxnet3"
+  is_vmx_remove_ethernet_interfaces: true
+
+cpu_config:
+  cpus: 4
+  cores: 4
+
+iso_config:
+  interface: "sata"
+  source: ".cache/iso" 
+
+disk_config:
+  size: 150000
+  type_id: 0
+  adapter_type: "scsi"
+
+guest_interaction:
+  communicator: "ssh"
+  timezone: "Europe/Kyiv"
+
+ssh_config:
+  username: ""
+  password: ""
+  private_key_file: ""
+  pub_key: ""
+  timeout: "30m"
+
+boot_control:
+  boot_wait: "5s"
+  shutdown_command: "sudo shutdown -P now"
+
+vnc_config:
+  address: "127.0.0.1"
+  port: 5963
+
+export_config:
+  # format: "ova"
+  is_skip: true
