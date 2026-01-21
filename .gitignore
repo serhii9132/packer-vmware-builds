@@ -1,6 +1,5 @@
 .cache
 .env
 .vagrant
-.venv
 artifacts
 packer_cache
