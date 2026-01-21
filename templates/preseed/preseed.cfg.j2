@@ -23,11 +23,11 @@ d-i clock-setup/utc boolean true
 # Set timezone
 d-i time/zone string {{ system_settings.timezone }}
 
-# Create root uer 
+# Create root user 
 d-i passwd/root-login boolean true
 d-i passwd/root-password-crypted password {{ ssh_config.password }}
 
-{% if ssh_config.username == "root" -%}
+{% if ssh_config.username != "root" -%}
 # Create a normal user account
 d-i passwd/user-fullname string {{ ssh_config.username }}
 d-i passwd/username string {{ ssh_config.username }}
@@ -45,19 +45,18 @@ d-i partman-lvm/confirm boolean true
 d-i partman-lvm/confirm_nooverwrite boolean true
 d-i partman-auto/expert_recipe string \
         part :: \
-                538 538 1075 free \
+                1024 1024 1024 free \
                         $iflabel{ gpt } \
-                        $reusemethod{ } \
                         method{ efi } \
                         format{ } \
                         . \
-                128 512 256 ext2 \
+                1024 1024 1024 ext4 \
                         $defaultignore{ } \
                         method{ format } format{ } \
-                        use_filesystem{ } filesystem{ ext2 } \
+                        use_filesystem{ } filesystem{ ext4 } \
                         mountpoint{ /boot } \
                         . \
-                1000 100000 -1 ext4 \
+                10000 100000 -1 ext4 \
                         $lvmok{ } lv_name{ root } \
                         method{ format } format{ } \
                         use_filesystem{ } filesystem{ ext4 } \
@@ -109,7 +108,7 @@ d-i finish-install/reboot_in_progress note
 
 d-i preseed/late_command string \
  in-target bash -c 'echo "PasswordAuthentication no" >> /etc/ssh/sshd_config.d/50-cloud-init.conf'; \
-{%- if ssh_config.username == "root" %}
+{%- if ssh_config.username != "root" %}
  in-target bash -c 'echo "{{ ssh_config.username }} ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/{{ ssh_config.username }}'; \
  in-target usermod -aG sudo {{ ssh_config.username }}; \
  in-target mkdir -p /home/{{ ssh_config.username }}/.ssh; \

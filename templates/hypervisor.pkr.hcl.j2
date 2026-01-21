@@ -21,7 +21,7 @@ source "vmware-iso" "{{ packer_builder_name }}" {
   headless                        = {{ system_settings.is_headless | lower }}
   vmx_remove_ethernet_interfaces  = {{ system_settings.is_vmx_remove_ethernet_interfaces | lower }}
   skip_export                     = {{ export_config.is_skip | lower }}
-  guest_os_type                   = "{{ vmware_guest_os_type }}"
+  guest_os_type                   = "{{ guest_os_type }}"
   vm_name                         = "{{ vm_name }}"
   
   cpus                            = {{ cpu_config.cpus }}
@@ -39,7 +39,7 @@ source "vmware-iso" "{{ packer_builder_name }}" {
   output_directory                = abspath("${local.output_directory}")
 
   communicator                    = "{{ system_settings.communicator }}"
-  http_directory                  = "artifacts/{{ packer_builder_name }}/{{ system_settings.http_directory }}"
+  http_directory                  = "artifacts/{{ packer_builder_name }}/{{ installer }}"
 
   vnc_bind_address                = "{{ vnc_config.address }}"
   vnc_port_min                    = "{{ vnc_config.port }}"
@@ -62,18 +62,18 @@ build {
   sources = ["sources.vmware-iso.{{ packer_builder_name }}"]
 
   provisioner "file" {
-    source = ".provision/files/regenerate_ssh_host_keys.service"
+    source = "./provision/files/regenerate_ssh_host_keys.service"
     destination = "/tmp/regenerate_ssh_host_keys.service"
   }
 
   provisioner "shell" {
     scripts = [
-      "provision/scripts/regenerate_ssh_host_keys.sh",
-      "provision/scripts/cleanup.sh",
-      "provision/scripts/zero_space.sh"
+      "./provision/scripts/regenerate_ssh_host_keys.sh",
+      "./provision/scripts/cleanup.sh",
+      "./provision/scripts/zero_space.sh"
     ]
 
-  {%- if ssh_config.is_rootless %}
+  {%- if ssh_config.username != "root" %}
     execute_command = "sudo {% raw %}{{ .Path }}{% endraw %}"
   {%- else %}
     execute_command = "{% raw %}{{ .Path }}{% endraw %}"

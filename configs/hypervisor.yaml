@@ -3,9 +3,9 @@ system_settings:
   memory: 4096
   is_headless: true
   firmware_type: "efi"
-  http_directory: "http"
   network_adapter_type: "vmxnet3"
   is_vmx_remove_ethernet_interfaces: true
+  communicator: "ssh"
 
 cpu_config:
   cpus: 4

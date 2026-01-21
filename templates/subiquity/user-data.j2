@@ -34,7 +34,7 @@ autoinstall:
   user-data:
     hostname: ubuntu
     users:
-    {%- if ssh_config.username == "root" %}
+    {%- if ssh_config.username != "root" %}
       - name: {{ ssh_config.username }}
         passwd: "{{ ssh_config.password }}"
         shell: /bin/bash
