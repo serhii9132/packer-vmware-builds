@@ -3,3 +3,4 @@
 .vagrant
 artifacts
 packer_cache
+logs
