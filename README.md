@@ -33,12 +33,12 @@ Automated VMware Workstation Pro image builds defined in YAML. Uses [packer-conf
 ### 1.Environment setup
 Create a .env file in the root of the project with the following content:
 ```sh
-USER="user"
+export USERNAME="user"
 # Use: mkpasswd -m sha-512
-PASSWORD='$6$vPP.....'
+export PASSWORD='$6$vPP.....'
 
-SSH_PUBLIC_KEY='ssh-ed25519 AAAAbbbbbbbccccccc....'
-SSH_PRIVATE_KEY_FILE="/home/user/.ssh/key"
+export SSH_PUBLIC_KEY='ssh-ed25519 AAAAbbbbbbbccccccc....'
+export SSH_PRIVATE_KEY_FILE="/home/user/.ssh/key"
 ```
 
 ### 2.Configuration generation
